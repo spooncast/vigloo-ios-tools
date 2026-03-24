@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "LifeTracker",
+    name: "VIGTools",
     platforms: [.iOS(.v15)],
     products: [
         .library(name: "LifeTracker", targets: ["LifeTracker"])
