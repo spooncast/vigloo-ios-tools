@@ -1,10 +1,10 @@
 import UIKit
 
+@MainActor
 public final class LifeTrackerDashboard {
     private static var instance: LifeTrackerDashboard?
 
     private var window: LifeTrackerWindow?
-    private weak var floatingViewController: LifeTrackerFloatingViewController?
 
     private let bottomOffset: CGFloat
 
@@ -21,24 +21,15 @@ public final class LifeTrackerDashboard {
             .first
         else { return }
 
-        let floatingViewController = LifeTrackerFloatingViewController(bottomOffset: self.bottomOffset)
+        let hostingController = LifeTrackerHostingController(bottomOffset: self.bottomOffset)
         let window = LifeTrackerWindow(windowScene: windowScene)
         window.windowLevel = .alert + 1
-        window.rootViewController = floatingViewController
+        window.rootViewController = hostingController
         window.backgroundColor = .clear
         window.isUserInteractionEnabled = true
         window.isHidden = false
 
-        self.floatingViewController = floatingViewController
         self.window = window
-    }
-
-    private func registerUpdate() {
-        LifeTracker.shared.onUpdate = { [weak self] groups in
-            guard let self else { return }
-
-            self.floatingViewController?.update(with: groups)
-        }
     }
 }
 
@@ -47,7 +38,6 @@ public extension LifeTrackerDashboard {
     static func setup(bottomOffset: CGFloat = 60.0) {
         let dashboard = LifeTrackerDashboard(bottomOffset: bottomOffset)
         dashboard.setupWindow()
-        dashboard.registerUpdate()
 
         LifeTrackerDashboard.instance = dashboard
     }

@@ -1,28 +1,29 @@
 import Foundation
 
-public final class LifeEntriesGroup {
+public struct LifeEntriesGroup: Sendable {
     public let groupName: String
-    public private(set) var entries = SimpleOrderedDictionary<String, LifeEntry>()
+    public internal(set) var entries = SimpleOrderedDictionary<String, LifeEntry>()
     public var totalCount: Int { self.entries.values.reduce(0) { $0 + $1.count } }
 
     init(groupName: String) {
         self.groupName = groupName
     }
 
-    func trackEntry(name: String) {
-        if self.entries[name] == nil {
-            self.entries[name] = LifeEntry(name: name)
-        }
-        self.entries[name]?.increment()
+    mutating func trackEntry(name: String) {
+        var entry = self.entries[name] ?? LifeEntry(name: name)
+        entry.increment()
+        self.entries[name] = entry
     }
 
-    func untrackEntry(name: String) {
-        guard let entry = self.entries[name] else { return }
+    mutating func untrackEntry(name: String) {
+        guard var entry = self.entries[name] else { return }
 
         entry.decrement()
 
         if entry.count == 0 {
             self.entries.removeValue(forKey: name)
+        } else {
+            self.entries[name] = entry
         }
     }
 }

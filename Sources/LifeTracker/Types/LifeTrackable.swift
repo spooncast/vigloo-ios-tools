@@ -17,7 +17,7 @@ public extension LifeTrackable {
             var configuration = Self.lifeConfiguration
             configuration.name = "\(type(of: self))"
 
-            LifeTracker.shared.track(self, configuration: configuration)
+            LifeTracker.scheduleTrack(self, configuration: configuration)
 
             let token = LifeToken(configuration: configuration)
             let tokenID = UnsafeRawPointer(Unmanaged.passUnretained(token).toOpaque())

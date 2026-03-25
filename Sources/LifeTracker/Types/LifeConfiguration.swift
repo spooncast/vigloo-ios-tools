@@ -1,6 +1,6 @@
 import Foundation
 
-public struct LifeConfiguration {
+public struct LifeConfiguration: Sendable {
     public private(set) var groupName: String
     public internal(set) var name: String
 

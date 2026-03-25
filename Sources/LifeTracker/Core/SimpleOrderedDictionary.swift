@@ -26,6 +26,8 @@ public struct SimpleOrderedDictionary<Key: Hashable, Value> {
     }
 }
 
+extension SimpleOrderedDictionary: Sendable where Key: Sendable, Value: Sendable {}
+
 extension SimpleOrderedDictionary: Sequence {
     public func makeIterator() -> IndexingIterator<[(Key, Value)]> {
         orderedKeys.compactMap { key in dict[key].map { (key, $0) } }.makeIterator()

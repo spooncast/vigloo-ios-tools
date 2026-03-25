@@ -8,6 +8,7 @@ final class LifeToken {
     }
 
     deinit {
-        LifeTracker.shared.untrack(self.configuration)
+        let config = self.configuration
+        LifeTracker.scheduleUntrack(config)
     }
 }
