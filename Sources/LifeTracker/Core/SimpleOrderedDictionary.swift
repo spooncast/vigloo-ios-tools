@@ -1,13 +1,13 @@
 import Foundation
 
-public struct SimpleOrderedDictionary<Key: Hashable, Value> {
+struct SimpleOrderedDictionary<Key: Hashable, Value> {
     private(set) var orderedKeys: [Key] = []
     private var dict: [Key: Value] = [:]
 
-    public var values: [Value] { orderedKeys.compactMap { dict[$0] } }
-    public var isEmpty: Bool { orderedKeys.isEmpty }
+    var values: [Value] { orderedKeys.compactMap { dict[$0] } }
+    var isEmpty: Bool { orderedKeys.isEmpty }
 
-    public subscript(key: Key) -> Value? {
+    subscript(key: Key) -> Value? {
         get { dict[key] }
         set {
             if let newValue {
@@ -20,7 +20,7 @@ public struct SimpleOrderedDictionary<Key: Hashable, Value> {
     }
 
     @discardableResult
-    public mutating func removeValue(forKey key: Key) -> Value? {
+    mutating func removeValue(forKey key: Key) -> Value? {
         orderedKeys.removeAll { $0 == key }
         return dict.removeValue(forKey: key)
     }
@@ -29,7 +29,7 @@ public struct SimpleOrderedDictionary<Key: Hashable, Value> {
 extension SimpleOrderedDictionary: Sendable where Key: Sendable, Value: Sendable {}
 
 extension SimpleOrderedDictionary: Sequence {
-    public func makeIterator() -> IndexingIterator<[(Key, Value)]> {
+    func makeIterator() -> IndexingIterator<[(Key, Value)]> {
         orderedKeys.compactMap { key in dict[key].map { (key, $0) } }.makeIterator()
     }
 }

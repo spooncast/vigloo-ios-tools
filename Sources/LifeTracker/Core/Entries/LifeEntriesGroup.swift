@@ -1,9 +1,9 @@
 import Foundation
 
-public struct LifeEntriesGroup: Sendable {
-    public let groupName: String
-    public internal(set) var entries = SimpleOrderedDictionary<String, LifeEntry>()
-    public var totalCount: Int { self.entries.values.reduce(0) { $0 + $1.count } }
+struct LifeEntriesGroup: Sendable {
+    let groupName: String
+    private(set) var entries = SimpleOrderedDictionary<String, LifeEntry>()
+    var totalCount: Int { self.entries.values.reduce(0) { $0 + $1.count } }
 
     init(groupName: String) {
         self.groupName = groupName

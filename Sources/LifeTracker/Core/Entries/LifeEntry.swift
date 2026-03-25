@@ -1,8 +1,8 @@
 import Foundation
 
-public struct LifeEntry: Sendable {
-    public let name: String
-    public internal(set) var count: Int
+struct LifeEntry: Sendable {
+    let name: String
+    private(set) var count: Int
 
     init(name: String) {
         self.name = name

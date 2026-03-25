@@ -34,10 +34,10 @@ actor LifeTrackerStore {
 }
 
 @MainActor
-public final class LifeTracker: ObservableObject {
-    public static let shared = LifeTracker()
+final class LifeTracker: ObservableObject {
+    static let shared = LifeTracker()
 
-    @Published public private(set) var groups = SimpleOrderedDictionary<String, LifeEntriesGroup>()
+    @Published private(set) var groups = SimpleOrderedDictionary<String, LifeEntriesGroup>()
 
     internal let store = LifeTrackerStore()
 
