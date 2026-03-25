@@ -1,8 +1,12 @@
 import UIKit
 import LifeTracker
 
+class DummyTrackable: LifeTrackable {
+    init() { trackLifetime() }
+}
+
 class ViewController: UIViewController, LifeTrackable {
-    private var count = 0
+    private var dummies: [DummyTrackable] = []
 
     private let countLabel: UILabel = {
         let label = UILabel()
@@ -22,12 +26,12 @@ class ViewController: UIViewController, LifeTrackable {
         let minusButton = UIButton(type: .system)
         minusButton.setTitle("−", for: .normal)
         minusButton.titleLabel?.font = .systemFont(ofSize: 32, weight: .bold)
-        minusButton.addTarget(self, action: #selector(decrementTapped), for: .touchUpInside)
+        minusButton.addTarget(self, action: #selector(removeDummy), for: .touchUpInside)
 
         let plusButton = UIButton(type: .system)
         plusButton.setTitle("+", for: .normal)
         plusButton.titleLabel?.font = .systemFont(ofSize: 32, weight: .bold)
-        plusButton.addTarget(self, action: #selector(incrementTapped), for: .touchUpInside)
+        plusButton.addTarget(self, action: #selector(addDummy), for: .touchUpInside)
 
         let stack = UIStackView(arrangedSubviews: [minusButton, countLabel, plusButton])
         stack.axis = .horizontal
@@ -42,13 +46,14 @@ class ViewController: UIViewController, LifeTrackable {
         ])
     }
 
-    @objc private func incrementTapped() {
-        count += 1
-        countLabel.text = "\(count)"
+    @objc private func addDummy() {
+        dummies.append(DummyTrackable())
+        countLabel.text = "\(dummies.count)"
     }
 
-    @objc private func decrementTapped() {
-        count -= 1
-        countLabel.text = "\(count)"
+    @objc private func removeDummy() {
+        guard !dummies.isEmpty else { return }
+        dummies.removeLast()
+        countLabel.text = "\(dummies.count)"
     }
 }

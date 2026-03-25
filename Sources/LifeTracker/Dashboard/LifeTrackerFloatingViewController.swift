@@ -7,6 +7,7 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
     private let buttonSize: CGFloat = 64
     private var cancellables = Set<AnyCancellable>()
     private var highlightWorkItem: DispatchWorkItem?
+    private var previousTotalCount = 0
 
     private let countLabel: UILabel = {
         let label = UILabel()
@@ -76,18 +77,25 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
         LifeTracker.shared.$groups
             .receive(on: DispatchQueue.main)
             .sink { [weak self] groups in
-                let count = groups.values.reduce(0) { $0 + $1.totalCount }
-                self?.countLabel.text = "\(count)"
-                self?.animateHighlight()
+                guard let self else { return }
+                let newCount = groups.values.reduce(0) { $0 + $1.totalCount }
+                let diff = newCount - self.previousTotalCount
+                self.previousTotalCount = newCount
+                self.countLabel.text = "\(newCount)"
+                if diff != 0 {
+                    self.animateHighlight(increased: diff > 0)
+                }
             }
             .store(in: &cancellables)
     }
 
-    private func animateHighlight() {
+    private func animateHighlight(increased: Bool) {
         highlightWorkItem?.cancel()
 
+        let highlightColor: UIColor = increased ? .systemRed : .systemBlue
+
         UIView.animate(withDuration: 0.15) {
-            self.floatingButton.backgroundColor = .systemRed
+            self.floatingButton.backgroundColor = highlightColor
         }
 
         let workItem = DispatchWorkItem { [weak self] in
@@ -103,12 +111,5 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
         let listView = LifeTrackerListView(tracker: LifeTracker.shared)
         let hostingController = UIHostingController(rootView: listView)
         present(hostingController, animated: true)
-    }
-}
-
-private final class PassThroughView: UIView {
-    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let hitView = super.hitTest(point, with: event)
-        return hitView === self ? nil : hitView
     }
 }
