@@ -21,7 +21,7 @@ public final class LifeTrackerDashboard {
             .first
         else { return }
 
-        let hostingController = LifeTrackerHostingController(bottomOffset: self.bottomOffset)
+        let hostingController = LifeTrackerFloatingViewController(bottomOffset: self.bottomOffset)
         let window = LifeTrackerWindow(windowScene: windowScene)
         window.windowLevel = .alert + 1
         window.rootViewController = hostingController
