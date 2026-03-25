@@ -1,0 +1,24 @@
+name: ExampleApp
+options:
+  bundleIdPrefix: com.vigloo.example
+  deploymentTarget:
+    iOS: "15.0"
+
+packages:
+  VIGTools:
+    path: ../
+
+targets:
+  ExampleApp:
+    type: application
+    platform: iOS
+    sources:
+      - ExampleApp
+    dependencies:
+      - package: VIGTools
+        product: LifeTracker
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        INFOPLIST_KEY_UILaunchScreen_Generation: true

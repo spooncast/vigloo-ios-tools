@@ -12,7 +12,7 @@ struct LifeTrackerListView: View {
                             .font(.system(size: 14, weight: .bold))
                             .foregroundColor(.white)
                     }
-                    .listRowBackground(Color(.secondarySystemBackground))
+                    .listRowBackground(Color(.darkGray))
                 } header: {
                     Text(groupName)
                         .font(.system(size: 20, weight: .bold))
@@ -21,6 +21,6 @@ struct LifeTrackerListView: View {
             }
         }
         .listStyle(.plain)
-        .background(Color(.secondarySystemBackground))
+        .background(Color(.darkGray))
     }
 }

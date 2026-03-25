@@ -5,6 +5,8 @@ struct LifeTrackerFloatingView: View {
     let bottomOffset: CGFloat
 
     @State private var isShowingDetail = false
+    @State private var isHighlighted = false
+    @State private var highlightTask: Task<Void, Never>?
 
     var body: some View {
         GeometryReader { geometry in
@@ -16,7 +18,7 @@ struct LifeTrackerFloatingView: View {
                     .foregroundColor(.white)
             }
             .frame(width: 64, height: 64)
-            .background(Color.green)
+            .background(isHighlighted ? Color.red : Color.green)
             .clipShape(Circle())
             .position(
                 x: geometry.size.width - 48,
@@ -26,8 +28,22 @@ struct LifeTrackerFloatingView: View {
         }
         .sheet(isPresented: $isShowingDetail) {
             LifeTrackerListView(tracker: tracker)
+                .background(SheetDetentsConfigurator())
         }
         .ignoresSafeArea()
+        .onChange(of: totalCount) { _ in
+            highlightTask?.cancel()
+            withAnimation(.easeIn(duration: 0.15)) {
+                isHighlighted = true
+            }
+            highlightTask = Task {
+                try? await Task.sleep(nanoseconds: 400_000_000)
+                guard !Task.isCancelled else { return }
+                withAnimation(.easeOut(duration: 0.3)) {
+                    isHighlighted = false
+                }
+            }
+        }
     }
 
     private var totalCount: Int {
