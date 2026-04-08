@@ -20,7 +20,7 @@ DEBUG 빌드에서 객체의 생명주기를 실시간으로 추적하는 도구
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/spooncast/vigloo-ios-tools.git", from: "0.0.2")
+    .package(url: "https://github.com/spooncast/vigloo-ios-tools.git", from: "0.1.1")
 ]
 ```
 
@@ -56,10 +56,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 ```
 
-탭바 등이 있는 경우 `bottomOffset`으로 플로팅 버튼 위치를 조정할 수 있습니다:
+네비게이션 바 등이 있는 경우 `topOffset`으로 플로팅 버튼 위치를 조정할 수 있습니다:
 
 ```swift
-LifeTrackerDashboard.setup(bottomOffset: 100)
+LifeTrackerDashboard.setup(topOffset: 100)
 ```
 
 ### 2. 추적할 클래스에 LifeTrackable 채택

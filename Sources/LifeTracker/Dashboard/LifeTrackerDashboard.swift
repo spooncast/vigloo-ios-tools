@@ -6,10 +6,10 @@ public final class LifeTrackerDashboard {
 
     private var window: LifeTrackerWindow?
 
-    private let bottomOffset: CGFloat
+    private let topOffset: CGFloat
 
-    private init(bottomOffset: CGFloat) {
-        self.bottomOffset = bottomOffset
+    private init(topOffset: CGFloat) {
+        self.topOffset = topOffset
     }
 
     private func setupWindow() {
@@ -21,7 +21,7 @@ public final class LifeTrackerDashboard {
             .first
         else { return }
 
-        let hostingController = LifeTrackerFloatingViewController(bottomOffset: self.bottomOffset)
+        let hostingController = LifeTrackerFloatingViewController(topOffset: self.topOffset)
         let window = LifeTrackerWindow(windowScene: windowScene)
         window.windowLevel = .alert + 1
         window.rootViewController = hostingController
@@ -34,9 +34,9 @@ public final class LifeTrackerDashboard {
 }
 
 public extension LifeTrackerDashboard {
-    /// - Parameter bottomOffset: 플로팅 버튼의 하단 여백 (탭바 높이 등)
-    static func setup(bottomOffset: CGFloat = 60.0) {
-        let dashboard = LifeTrackerDashboard(bottomOffset: bottomOffset)
+    /// - Parameter topOffset: 플로팅 버튼의 상단 여백 (네비게이션 바 높이 등)
+    static func setup(topOffset: CGFloat = 60.0) {
+        let dashboard = LifeTrackerDashboard(topOffset: topOffset)
         dashboard.setupWindow()
 
         LifeTrackerDashboard.instance = dashboard

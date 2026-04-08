@@ -3,11 +3,15 @@ import UIKit
 import Combine
 
 internal final class LifeTrackerFloatingViewController: UIViewController {
-    private let bottomOffset: CGFloat
+    private let topOffset: CGFloat
     private let buttonSize: CGFloat = 64
     private var cancellables = Set<AnyCancellable>()
     private var highlightWorkItem: DispatchWorkItem?
     private var previousTotalCount = 0
+    private var trailingConstraint: NSLayoutConstraint!
+    private var topConstraint: NSLayoutConstraint!
+    private var panStartTrailing: CGFloat = 0
+    private var panStartTop: CGFloat = 0
 
     private let countLabel: UILabel = {
         let label = UILabel()
@@ -45,8 +49,8 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
         return button
     }()
 
-    init(bottomOffset: CGFloat) {
-        self.bottomOffset = bottomOffset
+    init(topOffset: CGFloat) {
+        self.topOffset = topOffset
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -64,15 +68,21 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
         super.viewDidLoad()
 
         view.addSubview(floatingButton)
+        trailingConstraint = floatingButton.trailingAnchor.constraint(
+            equalTo: view.trailingAnchor, constant: -16
+        )
+        topConstraint = floatingButton.topAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.topAnchor, constant: topOffset
+        )
         NSLayoutConstraint.activate([
             floatingButton.widthAnchor.constraint(equalToConstant: buttonSize),
             floatingButton.heightAnchor.constraint(equalToConstant: buttonSize),
-            floatingButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            floatingButton.bottomAnchor.constraint(
-                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                constant: -bottomOffset
-            ),
+            trailingConstraint,
+            topConstraint,
         ])
+
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        floatingButton.addGestureRecognizer(pan)
 
         LifeTracker.shared.$groups
             .receive(on: DispatchQueue.main)
@@ -105,6 +115,31 @@ internal final class LifeTrackerFloatingViewController: UIViewController {
         }
         highlightWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: workItem)
+    }
+
+    @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: view)
+
+        switch gesture.state {
+        case .began:
+            panStartTrailing = trailingConstraint.constant
+            panStartTop = topConstraint.constant
+
+        case .changed:
+            let safeArea = view.safeAreaInsets
+            let maxTrailing: CGFloat = -safeArea.right
+            let minTrailing = -(view.bounds.width - safeArea.left - buttonSize)
+            let minTop: CGFloat = 0
+            let maxTop = view.bounds.height - safeArea.top - safeArea.bottom - buttonSize
+
+            let newTrailing = min(maxTrailing, max(minTrailing, panStartTrailing + translation.x))
+            let newTop = min(maxTop, max(minTop, panStartTop + translation.y))
+            trailingConstraint.constant = newTrailing
+            topConstraint.constant = newTop
+
+        default:
+            break
+        }
     }
 
     @objc private func buttonTapped() {

@@ -4,6 +4,19 @@ struct LifeTrackerListView: View {
     @ObservedObject var tracker: LifeTracker
 
     var body: some View {
+        VStack(spacing: 0) {
+            Capsule()
+                .fill(Color(white: 0.6))
+                .frame(width: 36, height: 5)
+                .padding(.top, 8)
+                .padding(.bottom, 8)
+
+            list
+        }
+        .background(Color(.darkGray))
+    }
+
+    private var list: some View {
         List {
             ForEach(Array(tracker.groups), id: \.0) { groupName, group in
                 Section {
