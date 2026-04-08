@@ -40,3 +40,6 @@ playground.xcworkspace
 # Package.pins
 .build/
 .swiftpm/
+
+# Example app build artifacts
+Example/.derived-data-log-*
